@@ -1,0 +1,16 @@
+[Monitoring]
+sample_rate=44100
+buffer_size=20
+
+[Logging]
+noise_limit=10000
+use_screenlog=True
+use_sqlite=True
+noise_archive="archives/noise_archive"
+
+[Record]
+use_recording=True
+noise_limit=5000
+record_time=5
+record_archive="archives/record_archive"
+
