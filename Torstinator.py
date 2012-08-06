@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 """ Torstinator.py - The ultimate Python bark detector """
 
@@ -119,7 +119,6 @@ class AudioBank(object):
     if len(self.audio_data) >  config.buffer_size:
       self.audio_data.pop(0)
       self.noise_levels.pop(0)
-    self.status()
     
   def buffer_size(self):
     """ buffer_size() returns the size of buffer in seconds """
@@ -212,6 +211,7 @@ class Torstinator:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
         self.audiobank.push(data, level)
+        self.audiobank.status()
         # logging.info("Noise: %d" % level)
       except IOError:
         logging.warning("PyAudio failed to read device, skipping")
