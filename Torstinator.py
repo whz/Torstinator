@@ -15,6 +15,7 @@ import cookielib
 import wave
 import audioop
 import ConfigParser
+import socket
 
 
 import logging
@@ -42,13 +43,14 @@ except ImportError:
         "(http://people.csail.mit.edu/hubert/pyaudio/)")
   sys.exit(1)
 
-
 class TConfig(object):
   config = None
 
 
   sample_rate = 44100
   buffer_size = 30
+  remote_host = '127.0.0.1'
+  remote_port = 1337
 
   def __init__(self):
     try:
@@ -192,6 +194,18 @@ class Torstinator:
       return
     
     self.monitor()
+
+  def remote_log(self, level):
+    try:
+      s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      s.connect((config.remote_host, config.remote_port))
+      send_string = '{"user":"%s","level":%d}' % ("test", level)
+      s.send(send_string)
+      data = s.recv(1024)
+      s.close()
+    except:
+      print "Unexpected error:", sys.exc_info()[0]
+      pass
       
   def save_buffer(self, filename):
     """ save_buffer(filename) saves current audiobank buffer
@@ -210,6 +224,7 @@ class Torstinator:
       try:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
+        self.remote_log(level)
         self.audiobank.push(data, level)
         self.audiobank.status()
         # logging.info("Noise: %d" % level)
