@@ -51,6 +51,7 @@ class TConfig(object):
   buffer_size = 30
   remote_host = '127.0.0.1'
   remote_port = 1337
+  remote_key = "test"
 
   def __init__(self):
     try:
@@ -64,6 +65,9 @@ class TConfig(object):
 
     self.sample_rate = self.config.getint('Monitoring','sample_rate')
     self.buffer_size = self.config.getint('Monitoring','buffer_size')
+    self.remote_host = self.config.get('Remote','remote_host')
+    self.remote_port = self.config.getint('Remote','remote_port')
+    self.remote_key = self.config.get('Remote','remote_key')
 
 
 class AudioBank(object):
@@ -155,6 +159,7 @@ class AudioBank(object):
     print "|-----------------------------------"
     print "| Max noise: %d" % max(self.noise_levels)
     print "| Average noise: %d" % self.rolling_average
+    print "| Remote: %s:%d/%s" % (config.remote_host, config.remote_port, config.remote_key)
     print "|-----------------------------------"
     for i in self.noise_levels:
       output = ""
@@ -199,7 +204,7 @@ class Torstinator:
     try:
       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       s.connect((config.remote_host, config.remote_port))
-      send_string = '{"user":"%s","level":%d}' % ("test", level)
+      send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, level)
       s.send(send_string)
       data = s.recv(1024)
       s.close()

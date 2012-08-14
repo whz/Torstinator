@@ -2,6 +2,11 @@
 sample_rate=44100
 buffer_size=20
 
+[Remote]
+remote_host=127.0.0.1
+remote_port=1337
+remote_key=test
+
 [Logging]
 noise_limit=10000
 use_screenlog=True
