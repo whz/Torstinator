@@ -90,6 +90,11 @@ class AudioBank(object):
             strftime("%Y-%m-%d")
     self.day = strftime("%d")
 
+    if os.path.isdir("archives"):
+      logging.debug("archives folder found")
+    else:
+      os.mkdir("archives")
+      logging.info("created archive folder")
 
     if os.path.isdir("archives/noise_archive"):
       logging.debug("noise_archive folder found")
