@@ -1,4 +1,4 @@
-noise_server/node_modules
+node_modules
 *.pyc
 Torstinator.conf
 archives
