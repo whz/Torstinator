@@ -214,7 +214,7 @@ class Torstinator:
     try:
       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       s.connect((config.remote_host, config.remote_port))
-      send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, level)
+      send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, self.audiobank.noiseleveltopercentage(level))
       s.send(send_string)
       data = s.recv(1024)
       self.audiobank.remote_status = "Online"
