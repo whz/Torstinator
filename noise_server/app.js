@@ -14,10 +14,15 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
 
-
+app.get('/smoothie.js', function (req, res) {
+        res.sendfile(__dirname + '/smoothie.js');
+        });
 
 io.sockets.on('connection', function (socket) {
-    socket.emit('soundlevel', { level: soundlevel });
+    //socket.on('soundlevel', { level: soundlevel });
+    setInterval(function() {
+        socket.emit('soundlevel', { level: soundlevel });
+    }, 1000);
 });
 
 

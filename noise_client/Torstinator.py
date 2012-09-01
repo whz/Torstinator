@@ -81,8 +81,8 @@ class AudioBank(object):
   noise_levels = []
 
   rolling_average = 0
-  silence = 70
-  noise = 20000
+  silence = 0
+  noise = 32739
   remote_status = "Offline"
 
   def __init__ (self):
@@ -144,8 +144,7 @@ class AudioBank(object):
   def noiseleveltopercentage(self, level):
     """ noiseleveltoprecentage(noiselevel) transforms
       your noise level into percentage value """
-    percentage = (float(level) - float(self.silence))
-    percentage = (percentage / float(self.noise)) * 100
+    percentage = (float(level) / float(self.noise)) * 100
     if percentage < 0:
       return 0
     elif percentage > 100:
