@@ -1,20 +1,23 @@
 <html>
     <head><title>Torstinator</title>
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-
         <script type="text/javascript" src="smoothie.js"></script>
 
     </head>
     <body>
         
         <canvas id="mycanvas" width="800" height="400"></canvas>
+        <div id="chart_div"></div>
 
         <script type='text/javascript'>
+	      google.load('visualization', '1', {packages:['gauge']});
+	      google.setOnLoadCallback(drawChart);
             var soundlevel = 0;
             socket = new io.connect();
             socket.on('soundlevel', function(sound){
                       soundlevel = sound.level;
-                      //socket.on('soundlevel', function (data) { console.log(data); });
+	              drawChart();
                       });
 
             
@@ -28,6 +31,25 @@
             smoothie.addTimeSeries(line1, { strokeStyle: 'rgb(0, 255, 0)', fillStyle: 'rgba(0, 255, 0, 0.4)', lineWidth: 3 });
             
             smoothie.streamTo(document.getElementById("mycanvas"), 1000);
+
+
+
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['Noise', soundlevel]
+                ]);
+            
+            var options = {
+                width: 300, height: 300,
+                redFrom: 80, redTo: 100,
+                yellowFrom:50, yellowTo: 80,
+                minorTicks: 5
+            };
+            
+            var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+            chart.draw(data, options);
+	    }
             </script>
 
     </body>
