@@ -7,14 +7,14 @@
     </head>
     <body>
         
-        <canvas id="mycanvas" width="400" height="100"></canvas>
+        <canvas id="mycanvas" width="800" height="400"></canvas>
 
         <script type='text/javascript'>
             var soundlevel = 0;
             socket = new io.connect();
             socket.on('soundlevel', function(sound){
                       soundlevel = sound.level;
-                      socket.on('soundlevel', function (data) { console.log(data); });
+                      //socket.on('soundlevel', function (data) { console.log(data); });
                       });
 
             
@@ -24,7 +24,7 @@
                         line1.append(new Date().getTime(), soundlevel);
                         }, 1000);
             
-            var smoothie = new SmoothieChart({ grid: { strokeStyle: 'rgb(125, 0, 0)', fillStyle: 'rgb(60, 0, 0)', lineWidth: 1, millisPerLine: 1000, verticalSections: 6 } });
+            var smoothie = new SmoothieChart({ grid: { strokeStyle: 'rgb(125, 0, 0)', fillStyle: 'rgb(60, 0, 0)', lineWidth: 1, millisPerLine: 1000, verticalSections: 10 } });
             smoothie.addTimeSeries(line1, { strokeStyle: 'rgb(0, 255, 0)', fillStyle: 'rgba(0, 255, 0, 0.4)', lineWidth: 3 });
             
             smoothie.streamTo(document.getElementById("mycanvas"), 1000);
