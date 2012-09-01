@@ -213,7 +213,9 @@ class Torstinator:
     try:
       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       s.connect((config.remote_host, config.remote_port))
-      send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, self.audiobank.noiseleveltopercentage(level))
+      send_string = '{ "user":"%s", "level":%d}' % (
+                        config.remote_key,
+                        self.audiobank.noiseleveltopercentage(level))
       s.send(send_string)
       data = s.recv(1024)
       self.audiobank.remote_status = "Online"
@@ -223,15 +225,19 @@ class Torstinator:
       self.audiobank.remote_status = "Offline"
       pass
       
-  def save_buffer(self, filename):
+  def save_buffer(self):
     """ save_buffer(filename) saves current audiobank buffer
       to hard disk """
-    wavefile = wave.open(filename, 'wb')
-    wavefile.setnchannels(1)
-    wavefile.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
-    wavefile.setframerate(config.sample_rate)
-    wavefile.writeframes(self.audiobank.get_data())
-    wavefile.close()
+    filename = 'archive/record_archive/%s.wav' % \
+    strftime("%Y-%m-%d_%H%M%S")
+          #wavefile = wave.open(filename, 'wb')
+          #wavefile.setparams((1, 2, 44100, 44100*len(self.audiobank.audio_data), 'NONE', 'noncompressed'))
+          #wavefile.setnchannels(1)
+          #wavefile.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
+          #wavefile.setframerate(config.sample_rate)
+          #wavefile.writeframes(''.join(self.audiobank.audio_data))
+          #wavefile.close()
+
 
   def monitor(self):
     """ monitor() receive data from microphone
@@ -240,6 +246,8 @@ class Torstinator:
       try:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
+        if level > 1000:
+          self.save_buffer()
         self.remote_log(level)
         self.audiobank.push(data, level)
         self.audiobank.status()
