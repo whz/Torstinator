@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/env python2.5
 # -*- coding: utf-8 -*-
 """ Torstinator.py - The ultimate Python bark detector """
 
@@ -15,6 +15,7 @@ import cookielib
 import wave
 import audioop
 import ConfigParser
+import socket
 
 
 import logging
@@ -42,13 +43,15 @@ except ImportError:
         "(http://people.csail.mit.edu/hubert/pyaudio/)")
   sys.exit(1)
 
-
 class TConfig(object):
   config = None
 
 
   sample_rate = 44100
   buffer_size = 30
+  remote_host = '127.0.0.1'
+  remote_port = 1337
+  remote_key = "test"
 
   def __init__(self):
     try:
@@ -62,6 +65,9 @@ class TConfig(object):
 
     self.sample_rate = self.config.getint('Monitoring','sample_rate')
     self.buffer_size = self.config.getint('Monitoring','buffer_size')
+    self.remote_host = self.config.get('Remote','remote_host')
+    self.remote_port = self.config.getint('Remote','remote_port')
+    self.remote_key = self.config.get('Remote','remote_key')
 
 
 class AudioBank(object):
@@ -119,7 +125,6 @@ class AudioBank(object):
     if len(self.audio_data) >  config.buffer_size:
       self.audio_data.pop(0)
       self.noise_levels.pop(0)
-    self.status()
     
   def buffer_size(self):
     """ buffer_size() returns the size of buffer in seconds """
@@ -154,6 +159,7 @@ class AudioBank(object):
     print "|-----------------------------------"
     print "| Max noise: %d" % max(self.noise_levels)
     print "| Average noise: %d" % self.rolling_average
+    print "| Remote: %s:%d/%s" % (config.remote_host, config.remote_port, config.remote_key)
     print "|-----------------------------------"
     for i in self.noise_levels:
       output = ""
@@ -193,6 +199,18 @@ class Torstinator:
       return
     
     self.monitor()
+
+  def remote_log(self, level):
+    try:
+      s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      s.connect((config.remote_host, config.remote_port))
+      send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, level)
+      s.send(send_string)
+      data = s.recv(1024)
+      s.close()
+    except:
+      print "Unexpected error:", sys.exc_info()[0]
+      pass
       
   def save_buffer(self, filename):
     """ save_buffer(filename) saves current audiobank buffer
@@ -211,7 +229,9 @@ class Torstinator:
       try:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
+        self.remote_log(level)
         self.audiobank.push(data, level)
+        self.audiobank.status()
         # logging.info("Noise: %d" % level)
       except IOError:
         logging.warning("PyAudio failed to read device, skipping")
