@@ -83,6 +83,7 @@ class AudioBank(object):
   rolling_average = 0
   silence = 70
   noise = 20000
+  remote_status = "Offline"
 
   def __init__ (self):
     """ init """
@@ -164,7 +165,11 @@ class AudioBank(object):
     print "|-----------------------------------"
     print "| Max noise: %d" % max(self.noise_levels)
     print "| Average noise: %d" % self.rolling_average
-    print "| Remote: %s:%d/%s" % (config.remote_host, config.remote_port, config.remote_key)
+    print "| Remote: %s:%d/%s (%s)" % (
+            config.remote_host,
+            config.remote_port,
+            config.remote_key,
+            self.remote_status)
     print "|-----------------------------------"
     for i in self.noise_levels:
       output = ""
@@ -212,9 +217,11 @@ class Torstinator:
       send_string = '{ "user":"%s", "level":%d}' % (config.remote_key, level)
       s.send(send_string)
       data = s.recv(1024)
+      self.audiobank.remote_status = "Online"
       s.close()
     except:
       print "Unexpected error:", sys.exc_info()[0]
+      self.audiobank.remote_status = "Offline"
       pass
       
   def save_buffer(self, filename):
