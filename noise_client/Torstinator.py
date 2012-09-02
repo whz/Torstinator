@@ -228,15 +228,14 @@ class Torstinator:
   def save_buffer(self):
     """ save_buffer(filename) saves current audiobank buffer
       to hard disk """
-    filename = 'archive/record_archive/%s.wav' % \
-    strftime("%Y-%m-%d_%H%M%S")
-          #wavefile = wave.open(filename, 'wb')
-          #wavefile.setparams((1, 2, 44100, 44100*len(self.audiobank.audio_data), 'NONE', 'noncompressed'))
+    filename = 'archives/record_archive/%s.wav' % strftime("%Y-%m-%d_%H%M%S")
+    wavefile = wave.open(filename, 'w')
+    wavefile.setparams((2, 2, 44100, 0, 'NONE', 'not compressed'))
           #wavefile.setnchannels(1)
           #wavefile.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
-          #wavefile.setframerate(config.sample_rate)
-          #wavefile.writeframes(''.join(self.audiobank.audio_data))
-          #wavefile.close()
+          #wavefile.setframerate(1)
+    wavefile.writeframes(''.join(self.audiobank.audio_data))
+    wavefile.close()
 
 
   def monitor(self):
@@ -246,7 +245,7 @@ class Torstinator:
       try:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
-        if level > 1000:
+        if level > 3000:
           self.save_buffer()
         self.remote_log(level)
         self.audiobank.push(data, level)
