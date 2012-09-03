@@ -215,7 +215,7 @@ class Torstinator:
       s.connect((config.remote_host, config.remote_port))
       send_string = '{ "user":"%s", "level":%d}' % (
                         config.remote_key,
-                        self.audiobank.noiseleveltopercentage(level))
+                        level)
       s.send(send_string)
       data = s.recv(1024)
       self.audiobank.remote_status = "Online"
@@ -224,19 +224,21 @@ class Torstinator:
       print "Unexpected error:", sys.exc_info()[0]
       self.audiobank.remote_status = "Offline"
       pass
-      
+  
   def save_buffer(self):
-    """ save_buffer(filename) saves current audiobank buffer
-      to hard disk """
-    filename = 'archives/record_archive/%s.wav' % strftime("%Y-%m-%d_%H%M%S")
-    wavefile = wave.open(filename, 'w')
-    wavefile.setparams((2, 2, 44100, 0, 'NONE', 'not compressed'))
-          #wavefile.setnchannels(1)
-          #wavefile.setsampwidth(self.paudio.get_sample_size(pyaudio.paInt16))
-          #wavefile.setframerate(1)
-    wavefile.writeframes(''.join(self.audiobank.audio_data))
+    all = []
+    all = self.audiobank.audio_data
+    samples = 44100
+    streamdata = ''.join(all)
+    filename = 'archives/record_archive/%s.wav' % \
+             strftime("%Y-%m-%d_%H%M%S")
+    wavefile = wave.open(filename, 'wb')
+    wavefile.setnchannels(1)
+    wavefile.setsampwidth(self.paudio.get_sample_size(\
+                        pyaudio.paInt16))
+    wavefile.setframerate(samples)
+    wavefile.writeframes(streamdata)
     wavefile.close()
-
 
   def monitor(self):
     """ monitor() receive data from microphone
@@ -245,7 +247,7 @@ class Torstinator:
       try:
         data = self.stream.read(config.sample_rate)
         level = int(audioop.max(data, 2))
-        if level > 3000:
+        if level > 5000:
           self.save_buffer()
         self.remote_log(level)
         self.audiobank.push(data, level)
