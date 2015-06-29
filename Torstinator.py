@@ -4,7 +4,7 @@
 # SETTINGS, CHANGE THESE IF REQUIRED
 
 # Percentage value from 1-100, used to detect noise
-RECORD_SENSITIVITY = 40
+RECORD_SENSITIVITY = 10
 
 # How many seconds should we wait for new noise
 RECORDING_STOP_AFTER_SILENCE = 3
@@ -38,11 +38,11 @@ def process_audio(data):
 	level = audioop.max(data, 2)
 	level_char = u'▁'
 	alert_level = MAX_LEVEL*(float(RECORD_SENSITIVITY)/float(100))
-	if level > alert_level*0.05:
-	 	level_char = u'▂'
 	if level > alert_level*0.1:
+	 	level_char = u'▂'
+	if level > alert_level*0.2:
 	 	level_char = u'▃'
-	if level > alert_level*0.25:
+	if level > alert_level*0.3:
 	 	level_char = u'▅'
 	if level > alert_level*0.5:
 	 	level_char = u'▇'
