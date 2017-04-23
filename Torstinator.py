@@ -105,12 +105,12 @@ if not os.path.isdir("csv"):
 if not os.path.isdir("wav"):
     os.mkdir("wav")
 
-print "TORSTINATOR %.1f" % (TORSTINATOR_VERSION)
+print("TORSTINATOR %.1f", TORSTINATOR_VERSION)
 last_second = 0
 print_time()
 while stream.is_active():
     time.sleep(1)
-    if strftime("%S") < last_second:
+    if int(strftime("%S")) < int(last_second):
         print_time()
     last_second = strftime("%S")
 
