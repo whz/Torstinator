@@ -26,7 +26,7 @@ import wave
 import audioop
 
 
-TORSTINATOR_VERSION = 2.0
+TORSTINATOR_VERSION = 2.1
 MAX_LEVEL = 32677
 
 audio_bank = []
@@ -105,7 +105,7 @@ if not os.path.isdir("csv"):
 if not os.path.isdir("wav"):
     os.mkdir("wav")
 
-print("TORSTINATOR %.1f", TORSTINATOR_VERSION)
+print("TORSTINATOR %.1f" % TORSTINATOR_VERSION)
 last_second = 0
 print_time()
 while stream.is_active():
