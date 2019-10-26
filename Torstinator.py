@@ -63,7 +63,7 @@ def process_audio(data):
         filename = 'wav/%s.wav' % strftime("%Y-%m-%d_%H%M%S")
         wavefile = wave.open(filename, 'w')
         wavefile.setparams((1, 2, 44100, 44100, 'NONE', 'not compressed'))
-        wavefile.writeframes(''.join(audio_bank))
+        wavefile.writeframes(b''.join(audio_bank))
         wavefile.close()
         audio_bank = []
         sys.stdout.write(u'┆')
