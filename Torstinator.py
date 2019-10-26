@@ -6,8 +6,6 @@
 # Percentage value from 1-100, used to detect noise
 RECORD_SENSITIVITY = 10
 
-# How many seconds should we wait for new noise
-RECORDING_STOP_AFTER_SILENCE = 3
 
 ####################################
 
@@ -15,6 +13,7 @@ import sys
 import time
 import os
 from time import strftime
+import argparse
 
 try:
     import pyaudio
@@ -27,17 +26,35 @@ import audioop
 
 
 TORSTINATOR_VERSION = 2.1
-MAX_LEVEL = 32677
 
 audio_bank = []
 current_silence = 10000000000000
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--stop-after", 
+                    type = int,
+                    help = "How many seconds should we wait for new noise before stopping recording", 
+                    default = 3)
+parser.add_argument("-m", "--max-level", 
+                    type = int,
+                    help = "Max value that can be read from the audio device", 
+                    default = 32677)
+parser.add_argument("-r", "--record-sensitivity", 
+                    type = int,
+                    help = "What amount of noise should trigger the recording", 
+                    default = 10,
+                    choices=[10, 20, 30, 40, 50, 60, 70, 80, 90])
+args = parser.parse_args()
+
+
 
 def process_audio(data):
     global current_silence, audio_bank
     should_record = False
     level = audioop.max(data, 2)
     level_char = u'▁'
-    alert_level = MAX_LEVEL*(float(RECORD_SENSITIVITY)/float(100))
+    alert_level = args.max_level*(float(args.record_sensitivity)/float(100))
     if level > alert_level*0.1:
         level_char = u'▂'
     if level > alert_level*0.2:
@@ -56,7 +73,7 @@ def process_audio(data):
     else:
         current_silence = current_silence + 1
 
-    if current_silence <= RECORDING_STOP_AFTER_SILENCE:
+    if current_silence <= args.stop_after:
         should_record = True 
     
     if should_record == False and len(audio_bank) > 0:
