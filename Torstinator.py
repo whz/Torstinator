@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ####################################
 # SETTINGS, CHANGE THESE IF REQUIRED
@@ -11,18 +11,18 @@ RECORDING_STOP_AFTER_SILENCE = 3
 
 ####################################
 
-try:
-    import pyaudio
-except ImportError:
-    print("You need to have pyaudio library "+ \
-        "(http://people.csail.mit.edu/hubert/pyaudio/) or pip install --allow-unverified pyaudio --allow-external PyAudio pyaudio")
-    sys.exit(1)
-
-import wave
 import sys
 import time
 import os
 from time import strftime
+
+try:
+    import pyaudio
+except ImportError:
+    print("You need to have pyaudio library\nInstall homebrew: https://brew.sh/\nInstall portaudio: brew install portaudio\nInstall pyaudio: pip3 install pyaudio")
+    sys.exit(1)
+
+import wave
 import audioop
 
 
