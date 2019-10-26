@@ -89,31 +89,38 @@ def print_time():
     sys.stdout.write(da_msg)
     sys.stdout.flush()
 
-p = pyaudio.PyAudio()
-stream = p.open(
-    format = pyaudio.paInt16,
-    channels = 1,
-    rate =  44100,
-    frames_per_buffer = 44100,
-    stream_callback = read_stream,
-    input = True
-    )
+def create_directories():
+    if not os.path.isdir("csv"):
+        os.mkdir("csv")
+    if not os.path.isdir("wav"):
+        os.mkdir("wav")
 
 
-if not os.path.isdir("csv"):
-    os.mkdir("csv")
-if not os.path.isdir("wav"):
-    os.mkdir("wav")
+def main():
+    create_directories()
 
-print("TORSTINATOR %.1f" % TORSTINATOR_VERSION)
-last_second = 0
-print_time()
-while stream.is_active():
-    time.sleep(1)
-    if int(strftime("%S")) < int(last_second):
-        print_time()
-    last_second = strftime("%S")
+    p = pyaudio.PyAudio()
+    stream = p.open(
+        format = pyaudio.paInt16,
+        channels = 1,
+        rate =  44100,
+        frames_per_buffer = 44100,
+        stream_callback = read_stream,
+        input = True
+        )
+
+    print("TORSTINATOR %.1f" % TORSTINATOR_VERSION)
+    last_second = 0
+    print_time()
+    while stream.is_active():
+        time.sleep(1)
+        if int(strftime("%S")) < int(last_second):
+            print_time()
+        last_second = strftime("%S")
 
 
-stream.close()
-p.terminate()
+    stream.close()
+    p.terminate()
+
+
+main()
