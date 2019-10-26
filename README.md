@@ -2,7 +2,6 @@
 
 Dog bark detector, needs python + portaudio bindings for python
 
-
 ```
 CSV-file output per day
 2015-06-01 20:35:32,1801,False
@@ -32,6 +31,17 @@ Fancy UTF-8 stdout
 2015-06-01 20:37 ▃▃▃▃▃▂▃▃▃▃▃▃▃▃▃▂▂▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▂▃▃▃▂▂▂▂▁▁▃▃▃▃▂▂▃▃▃▃▃▂▂▂▃▂▃
 2015-06-01 20:38 ▂▃▃▂▂▃▃▂▃▂▂▃▃▃▂▃▂▃▅▃▂▃▃▃▂▂▃▃▂▃▃▃▂▁▁▃▃▂▂▂▃▃▃▂▂▂▃▃▂▂▂▃▂▃▃▃▂▂▃▃▂
 2015-06-01 20:39 ▃▃▃▃▃▃▃▃▃▃▂▃▁▃▃▂▃▂▁▃▃▃▃▃▃▂▃▃▃▃▃▃▃▃▃▂▃▃▃▃▂▂▂▃▃▃▂▃▂▂▂▂▃▃▃▃▂▁▃▃
+```
+
+```
+▁ = no noise
+▂ = 10% of alert level
+▃ = 20%
+▅ = 30%
+▇ = 50%
+█ = 75%
+♬ = above your set alert level, recording
+┆ = recording stopped
 ```
 
 And it also starts recording on the amount of noise you define and it will record as long as it gets the amount of silent seconds that you define.

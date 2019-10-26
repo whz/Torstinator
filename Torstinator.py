@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ####################################
 # SETTINGS, CHANGE THESE IF REQUIRED
@@ -11,22 +11,22 @@ RECORDING_STOP_AFTER_SILENCE = 3
 
 ####################################
 
-try:
-    import pyaudio
-except ImportError:
-    print("You need to have pyaudio library "+ \
-        "(http://people.csail.mit.edu/hubert/pyaudio/) or pip install --allow-unverified pyaudio --allow-external PyAudio pyaudio")
-    sys.exit(1)
-
-import wave
 import sys
 import time
 import os
 from time import strftime
+
+try:
+    import pyaudio
+except ImportError:
+    print("You need to have pyaudio library\nInstall homebrew: https://brew.sh/\nInstall portaudio: brew install portaudio\nInstall pyaudio: pip3 install pyaudio")
+    sys.exit(1)
+
+import wave
 import audioop
 
 
-TORSTINATOR_VERSION = 2.0
+TORSTINATOR_VERSION = 2.1
 MAX_LEVEL = 32677
 
 audio_bank = []
@@ -63,7 +63,7 @@ def process_audio(data):
         filename = 'wav/%s.wav' % strftime("%Y-%m-%d_%H%M%S")
         wavefile = wave.open(filename, 'w')
         wavefile.setparams((1, 2, 44100, 44100, 'NONE', 'not compressed'))
-        wavefile.writeframes(''.join(audio_bank))
+        wavefile.writeframes(b''.join(audio_bank))
         wavefile.close()
         audio_bank = []
         sys.stdout.write(u'┆')
@@ -105,7 +105,7 @@ if not os.path.isdir("csv"):
 if not os.path.isdir("wav"):
     os.mkdir("wav")
 
-print("TORSTINATOR %.1f", TORSTINATOR_VERSION)
+print("TORSTINATOR %.1f" % TORSTINATOR_VERSION)
 last_second = 0
 print_time()
 while stream.is_active():
