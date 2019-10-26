@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-####################################
-# SETTINGS, CHANGE THESE IF REQUIRED
-
-# Percentage value from 1-100, used to detect noise
-RECORD_SENSITIVITY = 10
-
-
-####################################
+TORSTINATOR_VERSION = 2.1
 
 import sys
 import time
@@ -20,16 +13,12 @@ try:
 except ImportError:
     print("You need to have pyaudio library\nInstall homebrew: https://brew.sh/\nInstall portaudio: brew install portaudio\nInstall pyaudio: pip3 install pyaudio")
     sys.exit(1)
-
+    
 import wave
 import audioop
 
-
-TORSTINATOR_VERSION = 2.1
-
 audio_bank = []
 current_silence = 10000000000000
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--stop-after", 
@@ -46,8 +35,6 @@ parser.add_argument("-r", "--record-sensitivity",
                     default = 10,
                     choices=[10, 20, 30, 40, 50, 60, 70, 80, 90])
 args = parser.parse_args()
-
-
 
 def process_audio(data):
     global current_silence, audio_bank
@@ -96,7 +83,6 @@ def process_audio(data):
     sys.stdout.write(level_char)
     sys.stdout.flush()
 
-
 def read_stream(in_data, frame_count, time_info, status_flags):
     process_audio(in_data)
     return ("", 0)
@@ -111,7 +97,6 @@ def create_directories():
         os.mkdir("csv")
     if not os.path.isdir("wav"):
         os.mkdir("wav")
-
 
 def main():
     create_directories()
@@ -135,9 +120,7 @@ def main():
             print_time()
         last_second = strftime("%S")
 
-
     stream.close()
     p.terminate()
-
 
 main()
